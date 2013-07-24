@@ -151,8 +151,7 @@ strcpy(monstr[12], "Dec");
                 fgets( longstr2,130,infile);
                 // convert the char string to sgp4 elements
                 // includes initialization of sgp4
-                twoline2rv( longstr1, longstr2, typerun, typeinput, whichconst,
-                            startmfe, stopmfe, deltamin, satrec );
+                twoline2rv( longstr1, longstr2, typerun, typeinput, whichconst, startmfe, stopmfe, deltamin, satrec );
                 fprintf(outfile, "%ld xx\n", satrec.satnum);
                 printf(" %ld\n", satrec.satnum);
                 // call the propagator to get the initial state vector value
@@ -171,14 +170,12 @@ fprintf(outfilee,"\n");
 fprintf(outfilee,"BEGIN Ephemeris \n");
 fprintf(outfilee," \n");
 fprintf(outfilee,"NumberOfEphemerisPoints		146 \n");
-fprintf(outfilee,"ScenarioEpoch	  %3i %3s%5i%3i:%2i:%12.9f \n",day,monstr[mon],
-                  year,hr,min,sec );
+fprintf(outfilee,"ScenarioEpoch	  %3i %3s%5i%3i:%2i:%12.9f \n",day,monstr[mon],year,hr,min,sec );
 fprintf(outfilee,"InterpolationMethod		Lagrange \n");
 fprintf(outfilee,"InterpolationOrder		5 \n");
 fprintf(outfilee,"CentralBody				Earth \n");
 fprintf(outfilee,"CoordinateSystem			teme \n");
-fprintf(outfilee,"CoordinateSystemEpoch	%3i %3s%5i%3i:%2i:%12.9f \n",day,
-                  monstr[mon],year,hr,min,sec );
+fprintf(outfilee,"CoordinateSystemEpoch	%3i %3s%5i%3i:%2i:%12.9f \n",day,monstr[mon],year,hr,min,sec );
 fprintf(outfilee,"DistanceUnit			Kilometers \n");
 fprintf(outfilee," \n");
 fprintf(outfilee,"EphemerisTimePosVel \n");

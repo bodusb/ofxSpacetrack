@@ -80,6 +80,8 @@ void twoline2rv
        const double deg2rad  =   pi / 180.0;         //   0.0174532925199433
        const double xpdotp   =  1440.0 / (2.0 *pi);  // 229.1831180523293
 
+	  // printf("\n %s \n %s",longstr1,longstr2);
+
        double sec, mu, radiusearthkm, tumin, xke, j2, j3, j4, j3oj2;
        double startsec, stopsec, startdayofyr, stopdayofyr, jdstart, jdstop;
        int startyear, stopyear, startmon, stopmon, startday, stopday,
@@ -191,67 +193,67 @@ void twoline2rv
        days2mdhms ( year,satrec.epochdays, mon,day,hr,minute,sec );
        jday( year,mon,day,hr,minute,sec, satrec.jdsatepoch );
 
-       // ---- input start stop times manually
-       if ((typerun != 'v') && (typerun != 'c'))
-         {
-         // ------------- enter start/stop ymd hms values --------------------
-           if (typeinput == 'e')
-             {
-               printf("input start prop year mon day hr min sec \n");
-               // make sure there is no space at the end of the format specifiers in scanf!
-               scanf( "%i %i %i %i %i %lf",&startyear, &startmon, &startday, &starthr, &startmin, &startsec);
-               fflush(stdin);
-               jday( startyear,startmon,startday,starthr,startmin,startsec, jdstart );
+       //// ---- input start stop times manually
+       //if ((typerun != 'v') && (typerun != 'c'))
+       //  {
+       //  // ------------- enter start/stop ymd hms values --------------------
+       //    if (typeinput == 'e')
+       //      {
+       //        printf("input start prop year mon day hr min sec \n");
+       //        // make sure there is no space at the end of the format specifiers in scanf!
+       //        scanf( "%i %i %i %i %i %lf",&startyear, &startmon, &startday, &starthr, &startmin, &startsec);
+       //        fflush(stdin);
+       //        jday( startyear,startmon,startday,starthr,startmin,startsec, jdstart );
 
-               printf("input stop prop year mon day hr min sec \n");
-               scanf( "%i %i %i %i %i %lf",&stopyear, &stopmon, &stopday, &stophr, &stopmin, &stopsec);
-               fflush(stdin);
-               jday( stopyear,stopmon,stopday,stophr,stopmin,stopsec, jdstop );
+       //        printf("input stop prop year mon day hr min sec \n");
+       //        scanf( "%i %i %i %i %i %lf",&stopyear, &stopmon, &stopday, &stophr, &stopmin, &stopsec);
+       //        fflush(stdin);
+       //        jday( stopyear,stopmon,stopday,stophr,stopmin,stopsec, jdstop );
 
-               startmfe = (jdstart - satrec.jdsatepoch) * 1440.0;
-               stopmfe  = (jdstop - satrec.jdsatepoch) * 1440.0;
+       //        startmfe = (jdstart - satrec.jdsatepoch) * 1440.0;
+       //        stopmfe  = (jdstop - satrec.jdsatepoch) * 1440.0;
 
-               printf("input time step in minutes \n");
-               scanf( "%lf",&deltamin );
-             }
-           // -------- enter start/stop year and days of year values -----------
-           if (typeinput == 'd')
-             {
-               printf("input start year dayofyr \n");
-               scanf( "%li %lf",&startyear, &startdayofyr );
-               printf("input stop year dayofyr \n");
-               scanf( "%li %lf",&stopyear, &stopdayofyr );
+       //        printf("input time step in minutes \n");
+       //        scanf( "%lf",&deltamin );
+       //      }
+       //    // -------- enter start/stop year and days of year values -----------
+       //    if (typeinput == 'd')
+       //      {
+       //        printf("input start year dayofyr \n");
+       //        scanf( "%li %lf",&startyear, &startdayofyr );
+       //        printf("input stop year dayofyr \n");
+       //        scanf( "%li %lf",&stopyear, &stopdayofyr );
 
-               days2mdhms ( startyear,startdayofyr, mon,day,hr,minute,sec );
-               jday( startyear,mon,day,hr,minute,sec, jdstart );
-               days2mdhms ( stopyear,stopdayofyr, mon,day,hr,minute,sec );
-               jday( stopyear,mon,day,hr,minute,sec, jdstop );
+       //        days2mdhms ( startyear,startdayofyr, mon,day,hr,minute,sec );
+       //        jday( startyear,mon,day,hr,minute,sec, jdstart );
+       //        days2mdhms ( stopyear,stopdayofyr, mon,day,hr,minute,sec );
+       //        jday( stopyear,mon,day,hr,minute,sec, jdstop );
 
-               startmfe = (jdstart - satrec.jdsatepoch) * 1440.0;
-               stopmfe  = (jdstop - satrec.jdsatepoch) * 1440.0;
+       //        startmfe = (jdstart - satrec.jdsatepoch) * 1440.0;
+       //        stopmfe  = (jdstop - satrec.jdsatepoch) * 1440.0;
 
-               printf("input time step in minutes \n");
-               scanf( "%lf",&deltamin );
-             }
-           // ------------------ enter start/stop mfe values -------------------
-           if (typeinput == 'm')
-             {
-               printf("input start min from epoch \n");
-               scanf( "%lf",&startmfe );
-               printf("input stop min from epoch \n");
-               scanf( "%lf",&stopmfe );
-               printf("input time step in minutes \n");
-               scanf( "%lf",&deltamin );
-             }
-         }
+       //        printf("input time step in minutes \n");
+       //        scanf( "%lf",&deltamin );
+       //      }
+       //    // ------------------ enter start/stop mfe values -------------------
+       //    if (typeinput == 'm')
+       //      {
+       //        printf("input start min from epoch \n");
+       //        scanf( "%lf",&startmfe );
+       //        printf("input stop min from epoch \n");
+       //        scanf( "%lf",&stopmfe );
+       //        printf("input time step in minutes \n");
+       //        scanf( "%lf",&deltamin );
+       //      }
+       //  }
 
        // ------------ perform complete catalog evaluation, -+ 1 day ----------- 
-       if (typerun == 'c')
+    /*   if (typerun == 'c')
          {
            startmfe = -1440.0;
            stopmfe  =  1440.0;
            deltamin =    10.0;
-         }
+         }*/
 
        // ---------------- initialize the orbit at sgp4epoch -------------------
        sgp4init( whichconst, satrec.satnum, satrec.jdsatepoch-2433281.5, satrec.bstar,
