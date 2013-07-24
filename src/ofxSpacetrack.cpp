@@ -22,7 +22,6 @@ YMD ofxSpacetrack::convertJ2000toYMD(double value){
 }
 
 // Process the TLE
-
 bool ofxSpacetrack::processTLE(){
     double tumin; // minutes in one time unit
     double mu; //earth gravitational parameter
