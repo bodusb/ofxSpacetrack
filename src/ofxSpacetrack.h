@@ -8,14 +8,17 @@
 
 // http://celestrak.com/publications/AIAA/2006-6753/
 
-struct YMD{
+typedef struct YMD{
     int year;
     int mon;
     int day;
     int hr;
     int minute;
     int sec;
-};
+}YMD;
+
+typedef struct orbital{
+}orbital;
 
 class ofxSpacetrack{
 
@@ -23,28 +26,57 @@ class ofxSpacetrack{
 		ofxSpacetrack();
 		~ofxSpacetrack();
 
-        //handle TLE
-        void setFileTLE(string value){fileTLE = value;};
-        string getFileTLE(){return fileTLE;};
+        // Handle TLE
+        void        setFileTLE(string value){this->fileTLE = value;};
+        string      getFileTLE(){return this->fileTLE;};
+        bool        processTLE();
+        bool        validTLE();
 
-		// Current Time
-        YMD getCurrentYMD(){return currentYMD;};
-        double getCurrentJ2000(){return currentJ2000;};
-        double convertYMD2J200(YMD *value){}
+		// Time
+        YMD         getCurrentYMD()     {return this->currentYMD;};
+        double      getCurrentJ2000()   {return this->currentJ2000;};
+        double      convertYMDtoJ2000( YMD *value );
+        YMD         convertJ2000toYMD( double value );
 
-		// tracking controls
-		// sample
-		// set geod
-		// orbit elements
-		// get position
-		// get velocity
+        bool        setTimeMultiplier(double value) {this->timeMultiplier = value;};
+        double      getTimeMultiplier() { return this->timeMultiplier;};
 
-		//
+		// Propagator control
+        bool        initPropagator(); //re-starts TLE, inits sgp4, call propagator
+        bool        initPropagator( double atMFE );
+        bool        initPropagator( double atJ2000 );
+        bool        initPropagator( YMD atYMD );
+
+        bool        stopPropagator(); //stop propagator
+        bool        stopPropagator( double atMFE );
+        bool        stopPropagator( double atJ2000 );
+        bool        stopPropagator( YMD atYMD );
+
+
+		// Positions
+		ofPoint     *getCurrentPoint(){return *this->currentPoint;};
+		ofVec3f     *getCurrentVelocity(){return *this->currentVelocity;};
+
 
     private:
-        string fileTLE;         // TLE
-        double currentJ2000;    // Julian date                    days from 4713 bc
-        YMD currentYMD;         // year, month, day, and time
+        // Handle TLE
+        string      fileTLE;            // TLE
+        // Time
+        double      currentJ2000;       // Julian date                    days from 4713 bc
+        YMD         currentYMD;         // year, month, day, and time
+        double      currentMFE          // Minutes from epoch
+        double      timeMultiplier;
+
+        //Propagator control
+        elsetrec    satrec;             // Satellite informations (From the library)
+
+
+        //Position
+        ofPoint     currentPoint;       // get position
+        ofVec3f     currentVelocity;    // get velocity
+                                        // orbit elements
+
+
 };
 
 

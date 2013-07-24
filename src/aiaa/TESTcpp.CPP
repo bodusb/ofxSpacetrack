@@ -202,7 +202,7 @@ fprintf(outfilee, " %16.8f %16.8f %16.8f %16.8f %12.9f %12.9f %12.9f\n",
                    if(tsince > stopmfe)
                        tsince = stopmfe;
 
-                   sgp4 (whichconst, satrec,  tsince, ro,  vo);
+                   sgp4 (whichconst, satrec,  tsince, ro,  vo); //
 
                    if (satrec.error > 0)
                        printf("# *** error: t:= %f *** code = %3d\n",
