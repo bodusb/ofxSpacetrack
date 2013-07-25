@@ -33,7 +33,7 @@ bool ofxSpacetrack::validTLE(){
 // Process the TLE
 
 bool ofxSpacetrack::processTLE(){
-    
+
 
 	// TRIES TO READ THE TLE
 	if(this->fileTLE == "") return false;
@@ -48,8 +48,12 @@ bool ofxSpacetrack::processTLE(){
 
 	do{
 		string line = file.getNextLine();
-		if( line.front() == '1') firstLine = line;
-		if( line.front() == '2') secondLine = line;
+
+        vector<char> l(firstLine.size() +1);
+        copy(line.begin(),line.end(),l.begin());
+
+		if( l.front() == '1') firstLine = line;
+		if( l.front() == '2') secondLine = line;
 	}while(  !file.isLastLine());
 	// do just one sat -- later fix to set a vector of sats
 

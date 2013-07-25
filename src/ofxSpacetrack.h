@@ -2,9 +2,9 @@
 
 #include "ofMain.h"
 
-#include "aiaa/sgp4ext.h"
-#include "aiaa/sgp4unit.h"
-#include "aiaa/sgp4io.h"
+#include "aiaa/SGP4ext.h"
+#include "aiaa/SGP4UNIT.h"
+#include "aiaa/SGP4io.h"
 
 // http://celestrak.com/publications/AIAA/2006-6753/
 
@@ -38,7 +38,7 @@ class ofxSpacetrack{
         double      convertYMDtoJ2000( YMD *value );
         YMD         convertJ2000toYMD( double value );
 
-        bool        setTimeMultiplier(double value) {this->timeMultiplier = value;};
+        void        setTimeMultiplier(double value) {this->timeMultiplier = value;};
         double      getTimeMultiplier() { return this->timeMultiplier;};
 
 		// Propagator control
