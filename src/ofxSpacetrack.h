@@ -56,6 +56,7 @@ class ofxSpacetrack{
         double      getPropagationStep( ) { return this->propagationStep;};
 
        // void        update();
+        void Update();
 
 		// Positions
 		ofPoint     *getCurrentPoint(){return &this->currentPoint;};
