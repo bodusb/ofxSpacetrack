@@ -127,3 +127,14 @@ bool ofxSpacetrack::stopPropagatorInJ2000( double toJ2000 ){
 
 //-----------------------------------------------------------
 
+void ofxSpacetrack::Update(){
+    double v[3], r[3];
+    double jdupdate;
+
+    jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdupdate);
+    jdupdate = (jdupdate - satrec.jdsatepoch)*1440.0;
+    sgp4(wgs72, satrec, jdupdate, &r[0], &v[0]);
+    printf("JD %.2f \nVP %.2f %.2f %.2f \nVV %.2f %.2f %.2f", jdupdate, r[0], r[1], r[2], v[0], v[1], v[2]);
+}
+
+
