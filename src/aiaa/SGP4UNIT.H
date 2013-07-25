@@ -38,8 +38,9 @@
 *                           original baseline
 *       ----------------------------------------------------------------      */
 
-#include <math.h>
-#include <stdio.h>
+#include "ofMain.h"
+//#include <math.h>
+//#include <stdio.h>
 
 // -------------------------- structure declarations ----------------------------
 typedef enum

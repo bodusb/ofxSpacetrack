@@ -21,9 +21,9 @@
 *              14 aug 06  david vallado
 *                           original baseline
 *       ----------------------------------------------------------------      */
-
-#include <string.h>
-#include <math.h>
+#include "ofMain.h"
+//#include <string.h>
+//#include <math.h>
 
 // ------------------------- function declarations -------------------------
 

@@ -83,7 +83,15 @@ class ofxSpacetrack{
         ofVec3f     currentVelocity;    // get velocity - velocity vectors
         orbital     currentOrbital;     // orbit elements
 
-
+		//Gravitational Constants
+		double tumin; // minutes in one time unit
+		double mu; //earth gravitational parameter
+		double radiusearthkm; //radius of the earth in km
+		double xke; //reciprocal of tumin
+		double j2;
+		double j3;
+		double j4;
+		double j3oj2; // j3/j2
 };
 
 

@@ -33,20 +33,13 @@ bool ofxSpacetrack::validTLE(){
 // Process the TLE
 
 bool ofxSpacetrack::processTLE(){
-    double tumin; // minutes in one time unit
-    double mu; //earth gravitational parameter
-    double radiusearthkm; //radius of the earth in km
-    double xke; //reciprocal of tumin
-    double j2;
-    double j3;
-    double j4;
-    double j3oj2; // j3/j2
+    
 
 	// TRIES TO READ THE TLE
 	if(this->fileTLE == "") return false;
 
-	//SETs initial GRAV constant
-    getgravconst(wgs72, tumin, mu, radiusearthkm, xke, j2, j3, j4, j3oj2 );
+	////SETs initial GRAV constant
+    //getgravconst(wgs72, tumin, mu, radiusearthkm, xke, j2, j3, j4, j3oj2 );
 
 	// OPENS AND READ FILETLE
 	ofBuffer file = ofBufferFromFile(this->fileTLE);
@@ -58,7 +51,7 @@ bool ofxSpacetrack::processTLE(){
 		if( line.front() == '1') firstLine = line;
 		if( line.front() == '2') secondLine = line;
 	}while(  !file.isLastLine());
-	// do to just one sat -- later fix to set a vector of sats
+	// do just one sat -- later fix to set a vector of sats
 
 	//char fl[130] = firstLine;
 	//adapts string to char[130]

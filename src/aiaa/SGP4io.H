@@ -22,9 +22,9 @@
 *              14 aug 06  david vallado
 *                           original baseline
 *       ----------------------------------------------------------------      */
-
-#include <stdio.h>
-#include <math.h>
+#include "ofMain.h"
+//#include <stdio.h>
+//#include <math.h>
 
 #include "sgp4ext.h"    // for several misc routines
 #include "sgp4unit.h"   // for sgp4init and getgravconst
