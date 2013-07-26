@@ -1,0 +1,372 @@
+A
+
+angle - this procedure calculates the angle between two vectors.  the output is set to 999999.1 to indicate an undefined value.  be sure to check for this at the output phase.
+input:
+  vec1 	- vector number 1
+	vec2 	- vector number 2
+output:
+	theta       - angle between the two vectors  -pi to pi
+sgp4ext.cpp
+
+asinh - this function evaluates the inverse hyperbolic sine function.
+input:
+	xval        - angle value                                  any real
+output:
+	arcsinh     - result                                       any real
+sgp4ext.cpp
+
+C
+
+cross - this procedure crosses two vectors.
+input:
+	vec1 - vector number 1
+	vec2 - vector number 2
+output:
+	outvec - vector result of a x b
+sgp4ext.cpp
+
+D
+
+days2mdhms - this procedure converts the day of the year, days, to the equivalent month day, hour, minute and second.
+input:
+	year        - year                           1900 .. 2100
+	days        - julian day of the year         0.0  .. 366.0
+output:
+	mon         - month                          1 .. 12
+	day         - day                            1 .. 28,29,30,31
+	hr          - hour                           0 .. 23
+	min         - minute                         0 .. 59
+	sec         - second                         0.0 .. 59.999
+sgp4ext.cpp
+
+dot - this function finds the dot product of two vectors.
+input:
+	vec1 - vector number 1
+	vec2 - vector number 2
+output:
+	dot - result
+sgp4ext.cpp
+
+dpper - this procedure provides deep space long period periodic contributions to the mean elements.  By design, these periodics are zero at epoch. This used to be dscom which included initialization, but it's really a recurring function.
+input:
+	e3          -
+	ee2         -
+	peo         -
+	pgho        -
+	pho         -
+	pinco       -
+	plo         -
+	se2 , se3 , sgh2, sgh3, sgh4, sh2, sh3, si2, si3, sl2, sl3, sl4 -
+	t           -
+	xh2, xh3, xi2, xi3, xl2, xl3, xl4 -
+	zmol        -
+	zmos        -
+	ep          - eccentricity                           0.0 - 1.0
+	inclo       - inclination - needed for lyddane modification
+	nodep       - right ascension of ascending node
+	argpp       - argument of perigee
+	mp          - mean anomaly
+output:
+	ep          - eccentricity                           0.0 - 1.0
+	inclp       - inclination
+	nodep        - right ascension of ascending node
+	argpp       - argument of perigee
+	mp          - mean anomaly
+sgp4unit.cpp
+
+dscom - this procedure provides deep space common items used by both the secular and periodics subroutines.  input is provided as shown. This routine used to be called dpper, but the functions inside weren't well organized.
+input:
+	epoch       -
+	ep          - eccentricity
+	argpp       - argument of perigee
+	tc          -
+	inclp       - inclination
+	nodep       - right ascension of ascending node
+	np          - mean motion
+output:
+	sinim  , cosim  , sinomm , cosomm , snodm  , cnodm
+	day         -
+	e3          -
+	ee2         -
+	em          - eccentricity
+	emsq        - eccentricity squared
+	gam         -
+	peo         -
+	pgho        -
+	pho         -
+	pinco       -
+	plo         -
+	rtemsq      -
+	se2, se3         -
+	sgh2, sgh3, sgh4        -
+	sh2, sh3, si2, si3, sl2, sl3, sl4         -
+	s1, s2, s3, s4, s5, s6, s7          -
+	ss1, ss2, ss3, ss4, ss5, ss6, ss7, sz1, sz2, sz3         -
+	sz11, sz12, sz13, sz21, sz22, sz23, sz31, sz32, sz33        -
+	xgh2, xgh3, xgh4, xh2, xh3, xi2, xi3, xl2, xl3, xl4         -
+	nm          - mean motion
+	z1, z2, z3, z11, z12, z13, z21, z22, z23, z31, z32, z33         -
+	zmol        -
+	zmos        -
+sgp4unit.cpp
+
+disinit: this procedure provides deep space contributions to mean motion dot due to geopotential resonance with half day and one day orbits.
+input:
+	cosim, sinim-
+	emsq        - eccentricity squared
+	argpo       - argument of perigee
+	s1, s2, s3, s4, s5      -
+	ss1, ss2, ss3, ss4, ss5 -
+	sz1, sz3, sz11, sz13, sz21, sz23, sz31, sz33 -
+	t           - time
+	tc          -
+	gsto        - greenwich sidereal time                   rad
+	mo          - mean anomaly
+	mdot        - mean anomaly dot (rate)
+	no          - mean motion
+	nodeo       - right ascension of ascending node
+	nodedot     - right ascension of ascending node dot (rate)
+	xpidot      -
+	z1, z3, z11, z13, z21, z23, z31, z33 -
+	eccm        - eccentricity
+	argpm       - argument of perigee
+	inclm       - inclination
+	mm          - mean anomaly
+	xn          - mean motion
+	nodem       - right ascension of ascending node
+output:
+	em          - eccentricity
+	argpm       - argument of perigee
+	inclm       - inclination
+	mm          - mean anomaly
+	nm          - mean motion
+	nodem       - right ascension of ascending node
+	irez        - flag for resonance           0-none, 1-one day, 2-half day
+	atime       -
+	d2201, d2211, d3210, d3222, d4410, d4422, d5220, d5232, d5421, d5433    -
+	dedt        -
+	didt        -
+	dmdt        -
+	dndt        -
+	dnodt       -
+	domdt       -
+	del1, del2, del3        -
+	ses  , sghl , sghs , sgs  , shl  , shs  , sis  , sls
+	theta       -
+	xfact       -
+	xlamo       -
+	xli         -
+	xni
+sgp4unit.cpp
+
+dspace - this procedure provides deep space contributions to mean elements for perturbing third body.  these effects have been averaged over one revolution of the sun and moon. For earth resonance effects, the effects have been averaged over no revolutions of the satellite. (mean motion)
+input:
+	d2201, d2211, d3210, d3222, d4410, d4422, d5220, d5232, d5421, d5433 -
+	dedt        -
+	del1, del2, del3  -
+	didt        -
+	dmdt        -
+	dnodt       -
+	domdt       -
+	irez        - flag for resonance           0-none, 1-one day, 2-half day
+	argpo       - argument of perigee
+	argpdot     - argument of perigee dot (rate)
+	t           - time
+	tc          -
+	gsto        - gst
+	xfact       -
+	xlamo       -
+	no          - mean motion
+	atime       -
+	em          - eccentricity
+	ft          -
+	argpm       - argument of perigee
+	inclm       - inclination
+	xli         -
+	mm          - mean anomaly
+	xni         - mean motion
+	nodem       - right ascension of ascending node
+output:
+	atime       -
+	em          - eccentricity
+	argpm       - argument of perigee
+	inclm       - inclination
+	xli         -
+	mm          - mean anomaly
+	xni         -
+	nodem       - right ascension of ascending node
+	dndt        -
+	nm          - mean motion
+sgp4unit.cpp
+
+G
+getgravconst - This function gets constants for the propagator. note that mu is identified to facilitiate comparisons with newer models. The common useage is wgs72¹.
+input:
+	whichconst  - which set of constants to use  wgs72old¹, wgs72¹, wgs84¹.
+output:
+	tumin       - minutes in one time unit
+	mu          - earth gravitational parameter
+	radiusearthkm - radius of the earth in km
+	xke         - reciprocal of tumin
+	j2, j3, j4  - un-normalized zonal ha
+	j3oj2       - j3 divided by j2
+sgp4unit.cpp
+
+gstime - This function finds the greenwich sidereal time.
+input:
+	jdut1       - julian date in ut1             days from 4713 bc
+output: 
+	gstime      - greenwich sidereal time        0 to 2pi rad
+
+I
+initl - this procedure initializes the spg4 propagator. all the initialization is consolidated here instead of having multiple loops inside other routines.
+input:
+	ecco        - eccentricity                           0.0 - 1.0
+	epoch       - epoch time in days from jan 0, 1950. 0 hr
+	inclo       - inclination of satellite
+	no          - mean motion of satellite
+	satn        - satellite number
+output:
+	ainv        - 1.0 / a
+	ao          - semi major axis
+	con41       -
+	con42       - 1.0 - 5.0 cos(i)
+	cosio       - cosine of inclination
+	cosio2      - cosio squared
+	eccsq       - eccentricity squared
+	method      - flag for deep space                    'd', 'n'
+	omeosq      - 1.0 - ecco * ecco
+	posq        - semi-parameter squared
+	rp          - radius of perigee
+	rteosq      - square root of (1.0 - ecco*ecco)
+	sinio       - sine of inclination
+	gsto        - gst at time of observation               rad
+	no          - mean motion of satellite
+sgp4unit.cpp
+
+invjday - this procedure finds the year, month, day, hour, minute and second given the julian date. tu can be ut1, tdt, tdb, etc.
+input: 
+	jd          - julian date                    days from 4713 bc
+output:
+	year        - year                           1900 .. 2100
+	mon         - month                          1 .. 12
+	day         - day                            1 .. 28,29,30,31
+	hr          - hour                           0 .. 23
+	min         - minute                         0 .. 59
+	sec         - second                         0.0 .. 59.999
+sgp4ext.cpp
+
+J
+
+jday - this procedure finds the julian date given the year, month, day, and time. The julian date is defined by each elapsed day since noon, jan 1, 4713 bc.
+input:
+	year        - year                           1900 .. 2100
+	mon         - month                          1 .. 12
+	day         - day                            1 .. 28,29,30,31
+	hr          - universal time hour            0 .. 23
+	min         - universal time min             0 .. 59
+	sec         - universal time sec             0.0 .. 59.999
+output: 
+	jd          - julian date                    days from 4713 bc
+sgp4ext.cpp
+
+
+M
+
+mag - this procedure finds the magnitude of a vector.  the tolerance is set to * 0.000001, thus the 1.0e-12 for the squared test of underflows.
+input: 
+	vec - vector
+output:
+	vec - answer stored in fourth component
+sgp4ext.cpp
+
+
+N
+
+newtonnu - this function solves keplers equation when the true anomaly is known. The mean and eccentric, parabolic, or hyperbolic anomaly is also found. The parabolic limit at 168ø is arbitrary. the hyperbolic anomaly is also limited. the hyperbolic sine is used because it's not double valued.
+input:
+	ecc         - eccentricity                   0.0  to
+	nu          - true anomaly                   -2pi to 2pi rad
+output:	
+	e0          - eccentric anomaly              0.0  to 2pi rad       153.02 ø
+	m           - mean anomaly                   0.0  to 2pi rad       151.7425 ø
+sgp4ext.cpp
+
+R
+rv2coe - this function finds the classical orbital elements given the geocentric equatorial position and velocity vectors.
+input: 
+	r - ijk position vector (km)
+	v - ijk velocity vector (km / s)
+	mu - gravitational parameter (km3 / s2)
+output:
+	p           - semilatus rectum               km
+	a           - semimajor axis                 km
+	ecc         - eccentricity
+	incl        - inclination                    0.0  to pi rad
+	omega       - longitude of ascending node    0.0  to 2pi rad
+	argp        - argument of perigee            0.0  to 2pi rad
+	nu          - true anomaly                   0.0  to 2pi rad
+	m           - mean anomaly                   0.0  to 2pi rad
+	arglat      - argument of latitude      (ci) 0.0  to 2pi rad
+	truelon     - true longitude            (ce) 0.0  to 2pi rad
+	lonper      - longitude of periapsis    (ee) 0.0  to 2pi rad
+sgp4ext.cpp
+s
+
+sgp4 - This procedure is the sgp4 prediction model from space command. this is an updated and combined version of sgp4 and sdp4, which were originally published separately in spacetrack report #3. this version follows the methodology from the aiaa paper (2006) describing the history and development of the code.
+input:
+	satrec	 - initialised structure from sgp4init() call.
+	tsince	 - time eince epoch (minutes)
+output:
+	r           - position vector                     km
+	v           - velocity                            km/sec
+	return code - non-zero on error.
+		1 - mean elements, ecc >= 1.0 or ecc < -0.001 or a < 0.95 er
+		2 - mean motion less than 0.0
+		3 - pert elements, ecc < 0.0  or  ecc > 1.0
+		4 - semi-latus rectum < 0.0
+		5 - epoch elements are sub-orbital
+		6 - satellite has decayed
+sgp4unit.cpp
+
+sgp4init - This procedure initializes variables for sgp4.
+input:
+	satn        - satellite number
+	bstar       - sgp4 type drag coefficient              kg/m2er
+	ecco        - eccentricity
+	epoch       - epoch time in days from jan 0, 1950. 0 hr
+	argpo       - argument of perigee (output if ds)
+	inclo       - inclination
+	mo          - mean anomaly (output if ds)
+	no          - mean motion
+	nodeo       - right ascension of ascending node
+output:
+	satrec      - common values for subsequent calls
+	return code - non-zero on error.
+		1 - mean elements, ecc >= 1.0 or ecc < -0.001 or a < 0.95 er
+		2 - mean motion less than 0.0
+		3 - pert elements, ecc < 0.0  or  ecc > 1.0
+		4 - semi-latus rectum < 0.0
+		5 - epoch elements are sub-orbital
+		6 - satellite has decayed
+sgp4unit.cpp
+
+T
+twoline2rv - this function converts the two line element set character string data to variables and initializes the sgp4 variables. Several intermediate varaibles and quantities are determined. Note that the result is a structure so multiple satellites can be processed simultaneously without having to reinitialize. The verification mode is an important option that permits quick checks of any changes to the underlying technical theory. This option works using a modified tle file in which the start, stop, and delta time values are included at the end of the second line of data. this only works with the verification mode. The catalog mode simply propagates from -1440 to 1440 min from epoch and is useful when performing entire catalog runs.
+inputs:
+	longstr1    - first line of the tle
+	longstr2    - second line of the tle
+	typerun     - type of run                    verification 'v', catalog 'c',  manual 'm'
+	typeinput   - type of manual input           mfe 'm', epoch 'e', dayofyr 'd'
+	whichconst  - which set of constants to use  72, 84
+output:
+	satrec      - structure containing all the sgp4 satellite information
+sgp4io.cpp	
+
+
+
+
+1- References about WGS:
+https://en.wikipedia.org/wiki/World_Geodetic_System
+http://digitalcommons.calpoly.edu/cgi/viewcontent.cgi?article=1176&context=theses (pg 13)
+
