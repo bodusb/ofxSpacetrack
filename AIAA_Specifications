@@ -1,0 +1,51 @@
+Informations about archives of .cpp type from AIAA
+
+Debug1.cpp: Results after dpper (Deep Space Periodics)
+
+Debug2.cpp: Results after dscom (Deep Space Common Variables)
+
+Debug3.cpp: Results after dsinit (Deep Space Initialization)
+
+Debug4.cpp: Results after dspace (Deep Space Pertubations)
+
+Debug5.cpp: Results after initl (Initialization for sgp4)
+
+Debug6.cpp: Results after sgp4init (Initialization routine for sgp4)
+
+Debug7.cpp: Results after sgp4 (Simplified General Pertubations) - Propagator
+
+Sgp4Ext.cpp: This file contains extra routines needed for the main test program for sgp4. These routines are derived from the astro libraries.
+  routines¹:
+		sgn;
+		mag;
+		cross;
+		dot;
+		angle;
+		asinh;
+		newtonnu;
+		rv2coe;
+		jday;
+		days2mdhms;
+		invjday;
+
+Sgp4io.cpp: this file contains a function to read two line element sets. while not formerly part of the sgp4 mathematical theory, it is required for practical implementation.
+	routines¹:
+		twoline2rv;
+	
+Sgp4Unit.cpp: this file contains the sgp4 procedures for analytical propagation of a satellite. 
+	routines¹:
+		dpper;
+		dscom;
+		dsinit;
+		dspace;
+		initl;
+		sgp4init;
+		sgp4;
+		gstime;
+		getgravconst;
+
+
+
+*More details about this routines in “AIAA_Functions”.
+
+
