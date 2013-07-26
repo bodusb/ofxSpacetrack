@@ -5,6 +5,7 @@ ofxSpacetrack::ofxSpacetrack(){
     this->doPropagation = false;
     this->simulatedTime = false;
     this->propagationStep = 0;
+    this->timeMultiplier = 0;
 
 }
 
@@ -27,13 +28,6 @@ YMD ofxSpacetrack::convertJ2000toYMD(double value){
 }
 
 
-// Verify if the TLE read is valid
-bool ofxSpacetrack::validTLE(){
-	return true;
-}
-
-
-
 
 // Process the TLE
 
@@ -44,7 +38,7 @@ bool ofxSpacetrack::processTLE(){
 	if(this->fileTLE == "") return false;
 
 	////SETs initial GRAV constant
-    getgravconst(wgs72, tumin, mu, radiusearthkm, xke, j2, j3, j4, j3oj2 );
+    getgravconst(wgs72, this->tumin, this->mu, this->radiusearthkm, this->xke, this->j2, this->j3, this->j4, this->j3oj2 );
 
 	// OPENS AND READ FILETLE
 	ofBuffer file = ofBufferFromFile(this->fileTLE);
@@ -79,6 +73,9 @@ bool ofxSpacetrack::processTLE(){
                                 this->currentYMD.hr, this->currentYMD.minute, this->currentYMD.sec);    //update YMD
 
 
+
+    this->info.number = this->satrec.satnum;
+
 	return true;
 }
 //-----------------------------------------------------------
@@ -111,15 +108,15 @@ bool ofxSpacetrack::startPropagatorFromYMD( YMD fromYMD ){
     this->startMFE = (jdstart - satrec.jdsatepoch) * 1440.0;
     return true;
 }
-
-//-----------------------------------------------------------
-
-bool ofxSpacetrack::stopPropagatorNow(){
-	double jdstop;
-    jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdstop);
-	this->stopMFE = (jdstop- satrec.jdsatepoch) * 1440.0;
-    return true;
-}
+//
+////-----------------------------------------------------------
+//
+//bool ofxSpacetrack::stopPropagatorNow(){
+//	double jdstop;
+//    jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdstop);
+//	this->stopMFE = (jdstop- satrec.jdsatepoch) * 1440.0;
+//    return true;
+//}
 
 //-----------------------------------------------------------
 bool ofxSpacetrack::stopPropagatorInMFE( double toMFE ){
@@ -170,8 +167,18 @@ void ofxSpacetrack::update(){
                                 this->currentYMD.hr, this->currentYMD.minute, this->currentYMD.sec);    //update YMD
 
     // get updated orbital
-    //rv2coe()
-
+    rv2coe(r,v,this->mu,
+           this->info.semilatusRectum,
+           this->info.semimajorAxis,
+           this->info.eccentricity,
+           this->info.inclination,
+           this->info.omega,
+           this->info.argp,
+           this->info.nu,
+           this->info.m,
+           this->info.arglat,
+           this->info.truelon,
+           this->info.lonper);
 
 }
 

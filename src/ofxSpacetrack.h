@@ -18,6 +18,18 @@ typedef struct YMD{
 }YMD;
 
 typedef struct satInfo{
+    int number;
+    double semilatusRectum;                         // semilatus rectum               km
+    double semimajorAxis;                           // km
+    double eccentricity;
+    double inclination;
+    double omega;                                   // longitude of ascending node - 0.0  to 2pi rad
+    double argp;                                    // argument of perigee - 0.0  to 2pi rad
+    double nu;                                      // true anomaly - 0.0  to 2pi rad
+    double m;                                       // mean anomaly - 0.0  to 2pi rad
+    double arglat;                                  // argument of latitude      (ci) 0.0  to 2pi rad - circular inclined
+    double truelon;                                 // true longitude            (ce) 0.0  to 2pi rad - circular equatorial
+    double lonper;                                  // longitude of periapsis    (ee) 0.0  to 2pi rad - elliptical equatorial
 }satInfo;
 
 class ofxSpacetrack{
@@ -30,7 +42,6 @@ class ofxSpacetrack{
         void        setFileTLE(string value){this->fileTLE = value;};
         string      getFileTLE(){return this->fileTLE;};
         bool        processTLE();
-        bool        validTLE();
 
 		// Time
         YMD         getCurrentYMD()     {return this->currentYMD;};
@@ -42,7 +53,7 @@ class ofxSpacetrack{
         void        setTimeMultiplier(double value) {this->timeMultiplier = value;};
         double      getTimeMultiplier() { return this->timeMultiplier;};
         void        doSimulatedTime(bool value) {this->simulatedTime = value;};
-        bool        getSimulatedTime(){return this->simulatedTime;};
+        bool        isSimulatedTime(){return this->simulatedTime;};
 
 		// Propagator control
         bool        startPropagatorNow(); //start propator
@@ -50,7 +61,7 @@ class ofxSpacetrack{
         bool		startPropagatorFromJ2000( double fromJ2000 );
         bool        startPropagatorFromYMD( YMD fromYMD );
 
-        bool        stopPropagatorNow(); {this->doPropagation = false;} //stop propagator
+        bool        stopPropagatorNow() {this->doPropagation = false; return true;} //stop propagator
         bool        stopPropagatorInMFE( double toMFE );
         bool        stopPropagatorInJ2000( double toJ2000 );
         bool        stopPropagatorInYMD( YMD toYMD );
@@ -64,6 +75,9 @@ class ofxSpacetrack{
 		// Positions
 		ofPoint     getCurrentPoint(){return this->currentPoint;};
 		ofVec3f     getCurrentVelocity(){return this->currentVelocity;};
+
+		// Info
+		satInfo     getSatInfo(){return this->info;};
 
 
     private:
@@ -85,12 +99,13 @@ class ofxSpacetrack{
         double      startMFE;
         double      stopMFE;
 
-         elsetrec    satrec;             // Satellite informations (From the library)
+        elsetrec    satrec;             // Satellite informations (From the library)
 
         //Position from Earth Central Body - TEME
         ofPoint     currentPoint;       // get position - geocentric equatorial position
         ofVec3f     currentVelocity;    // get velocity - velocity vectors
-        satInfo     currentOrbital;     // orbit elements
+
+        satInfo     info;     // orbit elements e info
 
 		//Gravitational Constants
 		double tumin; // minutes in one time unit

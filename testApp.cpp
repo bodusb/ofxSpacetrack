@@ -18,7 +18,8 @@ void testApp::setup(){
 
 	st = new ofxSpacetrack();
 
-	st->setFileTLE("SCD1_2LINE.DAT");
+	//st->setFileTLE("SCD1_2LINE.DAT");
+	st->setFileTLE("goes.txt");
 	st->processTLE();
 
 
@@ -43,6 +44,11 @@ void testApp::draw(){
 
 	cam.begin();
 
+
+//	ofTranslate(ofGetWidth()/2,ofGetHeight()/2);
+//	ofRotateX(90);
+//	ofScale(0.03,0.03,0.03);
+
 		//DRAW Satellite
 		ofPushMatrix();
 			ofSetColor(ofColor::red);
@@ -56,6 +62,7 @@ void testApp::draw(){
 		ofSphere(6378);
 
     cam.end();
+
 
 //
 
@@ -78,7 +85,6 @@ void testApp::draw(){
 	verdana30.drawString(	"VELX: " + ofToString(st->getCurrentVelocity()) ,10,80);		//VEL X
 
 	double alt = st->getCurrentPoint().length() - 6378;
-	cout<< alt;
 	double vel = st->getCurrentVelocity().length();
 
 	verdana30.drawString(	"LAT: " + ofToString(1) +
@@ -95,16 +101,41 @@ void testApp::draw(){
 	verdana30.drawString("PC Time: "  + ofToString(ofGetYear()) + " " + ofToString(ofGetMonth())   +  " " + ofToString(ofGetDay())
 		  +  " " + ofToString(ofGetHours())   +  " " + ofToString(ofGetMinutes())   +  " " + ofToString(ofGetSeconds()),10,200);
 
+    verdana30.drawString("Time multiplier: "  + ofToString(st->getTimeMultiplier()),10,220);
+
+	verdana30.drawString("Simulation Time: "  +
+                      ofToString(st->getCurrentYMD().year) + " " +
+                      ofToString(st->getCurrentYMD().mon)   +  " " +
+                      ofToString(st->getCurrentYMD().day)  +  " " +
+                      ofToString(st->getCurrentYMD().hr)   +  " " +
+                      ofToString(st->getCurrentYMD().minute)   +  " " +
+                      ofToString(st->getCurrentYMD().sec),10,240);
+
+
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-
+    double aux;
+    switch(key){
+    case OF_KEY_UP:
+        st->setTimeMultiplier(st->getTimeMultiplier() + 0.01);
+        break;
+    case OF_KEY_DOWN:
+        st->setTimeMultiplier(st->getTimeMultiplier() - 0.01);
+        break;
+    default: break;};
 }
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-
+    switch(key){
+    case 's': //toogle simulated time
+        if(st->isSimulatedTime()){st->doSimulatedTime(false);}else{st->doSimulatedTime(true);}
+        break;
+    default:
+        break;
+    }
 }
 
 //--------------------------------------------------------------
