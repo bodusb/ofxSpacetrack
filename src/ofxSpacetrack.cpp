@@ -1,6 +1,11 @@
 #include "ofxSpacetrack.h"
 
 ofxSpacetrack::ofxSpacetrack(){
+
+    this->doPropagation = false;
+    this->simulatedTime = false;
+    this->propagationStep = 0;
+
 }
 
 ofxSpacetrack::~ofxSpacetrack(){
@@ -39,7 +44,7 @@ bool ofxSpacetrack::processTLE(){
 	if(this->fileTLE == "") return false;
 
 	////SETs initial GRAV constant
-    //getgravconst(wgs72, tumin, mu, radiusearthkm, xke, j2, j3, j4, j3oj2 );
+    getgravconst(wgs72, tumin, mu, radiusearthkm, xke, j2, j3, j4, j3oj2 );
 
 	// OPENS AND READ FILETLE
 	ofBuffer file = ofBufferFromFile(this->fileTLE);
@@ -57,7 +62,6 @@ bool ofxSpacetrack::processTLE(){
 	}while(  !file.isLastLine());
 	// do just one sat -- later fix to set a vector of sats
 
-	//char fl[130] = firstLine;
 	//adapts string to char[130]
 	vector<char> fl(firstLine.size() +1);
 	copy(firstLine.begin(),firstLine.end(),fl.begin());
@@ -66,6 +70,15 @@ bool ofxSpacetrack::processTLE(){
 
 	twoline2rv(&*fl.begin(),&*sl.begin(),'m','m',wgs72,this->startMFE,this->stopMFE,this->propagationStep,satrec);
 
+    //Setup starting time
+    double jdcurrent;
+    jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdcurrent);	//YMD -> JD
+    this->currentMFE = (jdcurrent - satrec.jdsatepoch)*1440.0;
+    this->currentJ2000 = satrec.jdsatepoch;                                                               //update JD
+    invjday(this->currentJ2000, this->currentYMD.year, this->currentYMD.mon, this->currentYMD.day,
+                                this->currentYMD.hr, this->currentYMD.minute, this->currentYMD.sec);    //update YMD
+
+
 	return true;
 }
 //-----------------------------------------------------------
@@ -73,6 +86,9 @@ bool ofxSpacetrack::startPropagatorNow(){
 	double jdstart;
     jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdstart );
 	this->startMFE = (jdstart - satrec.jdsatepoch) * 1440.0;
+
+	this->currentMFE = this->startMFE;
+	this->doPropagation = 1;
     return true;
 }
 
@@ -127,14 +143,36 @@ bool ofxSpacetrack::stopPropagatorInJ2000( double toJ2000 ){
 
 //-----------------------------------------------------------
 
-void ofxSpacetrack::Update(){
-    double v[3], r[3];
-    double jdupdate;
+void ofxSpacetrack::update(){
+    if(!this->doPropagation) return;
 
-    jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdupdate);
-    jdupdate = (jdupdate - satrec.jdsatepoch)*1440.0;
-    sgp4(wgs72, satrec, jdupdate, &r[0], &v[0]);
-    printf("JD %.2f \nVP %.2f %.2f %.2f \nVV %.2f %.2f %.2f", jdupdate, r[0], r[1], r[2], v[0], v[1], v[2]);
+    if(!this->simulatedTime){
+        double jdcurrent;
+        jday( ofGetYear(),ofGetMonth(),ofGetDay(),ofGetHours(),ofGetMinutes(),ofGetSeconds(), jdcurrent);	//YMD -> JD
+        this->currentMFE = (jdcurrent - satrec.jdsatepoch)*1440.0; // JD -> MFE
+    } else {
+        this->currentMFE += timeMultiplier;
+    }
+
+    //------------------------------------------------------------------
+    //                  PROPAGATOR
+    double		v[3], r[3];
+    sgp4(wgs72, satrec, this->currentMFE, &r[0], &v[0]);
+    //------------------------------------------------------------------
+
+    // Update positions
+    this->currentPoint.set(r[0],r[1],r[2]);
+    this->currentVelocity.set(v[0],v[1],v[2]);
+
+    // Update times
+    this->currentJ2000 = satrec.jdsatepoch + this->currentMFE/1440.0;                                         //update JD
+    invjday(this->currentJ2000, this->currentYMD.year, this->currentYMD.mon, this->currentYMD.day,
+                                this->currentYMD.hr, this->currentYMD.minute, this->currentYMD.sec);    //update YMD
+
+    // get updated orbital
+    //rv2coe()
+
+
 }
 
 

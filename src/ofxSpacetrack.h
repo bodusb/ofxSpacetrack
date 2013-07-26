@@ -17,8 +17,8 @@ typedef struct YMD{
     double sec;
 }YMD;
 
-typedef struct orbital{
-}orbital;
+typedef struct satInfo{
+}satInfo;
 
 class ofxSpacetrack{
 
@@ -35,19 +35,22 @@ class ofxSpacetrack{
 		// Time
         YMD         getCurrentYMD()     {return this->currentYMD;};
         double      getCurrentJ2000()   {return this->currentJ2000;};
+        double		getCurrentMFE()		{return this->currentMFE;};
         double      convertYMDtoJ2000( YMD *value );
         YMD         convertJ2000toYMD( double value );
 
         void        setTimeMultiplier(double value) {this->timeMultiplier = value;};
         double      getTimeMultiplier() { return this->timeMultiplier;};
+        void        doSimulatedTime(bool value) {this->simulatedTime = value;};
+        bool        getSimulatedTime(){return this->simulatedTime;};
 
 		// Propagator control
-        bool        startPropagatorNow();
+        bool        startPropagatorNow(); //start propator
         bool        startPropagatorFromMFE( double fromMFE );
         bool		startPropagatorFromJ2000( double fromJ2000 );
         bool        startPropagatorFromYMD( YMD fromYMD );
 
-        bool        stopPropagatorNow(); //stop propagator
+        bool        stopPropagatorNow(); {this->doPropagation = false;} //stop propagator
         bool        stopPropagatorInMFE( double toMFE );
         bool        stopPropagatorInJ2000( double toJ2000 );
         bool        stopPropagatorInYMD( YMD toYMD );
@@ -55,34 +58,39 @@ class ofxSpacetrack{
         void        setPropagationStep( double step ){this->propagationStep = step;};
         double      getPropagationStep( ) { return this->propagationStep;};
 
-       // void        update();
-        void Update();
+        void        update();
+
 
 		// Positions
-		ofPoint     *getCurrentPoint(){return &this->currentPoint;};
-		ofVec3f     *getCurrentVelocity(){return &this->currentVelocity;};
+		ofPoint     getCurrentPoint(){return this->currentPoint;};
+		ofVec3f     getCurrentVelocity(){return this->currentVelocity;};
 
 
     private:
         // Handle TLE
         string      fileTLE;            // TLE
+
         // Time
         double      currentJ2000;       // Julian date                    days from 4713 bc
         YMD         currentYMD;         // year, month, day, and time
         double      currentMFE;          // Minutes from epoch
-        double      timeMultiplier;
 
+        //Propagator control
+
+        double      propagationStep;    // Propagation step
+        bool        simulatedTime;      // Set to simulation time
+        bool        doPropagation;      // do the propagation
+
+        double      timeMultiplier;
         double      startMFE;
         double      stopMFE;
 
-        //Propagator control
-        elsetrec    satrec;             // Satellite informations (From the library)
-        double      propagationStep;    // Propagation step
+         elsetrec    satrec;             // Satellite informations (From the library)
 
         //Position from Earth Central Body - TEME
         ofPoint     currentPoint;       // get position - geocentric equatorial position
         ofVec3f     currentVelocity;    // get velocity - velocity vectors
-        orbital     currentOrbital;     // orbit elements
+        satInfo     currentOrbital;     // orbit elements
 
 		//Gravitational Constants
 		double tumin; // minutes in one time unit
