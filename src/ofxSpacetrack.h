@@ -8,6 +8,11 @@
 
 // http://celestrak.com/publications/AIAA/2006-6753/
 
+// TO DO
+
+// PROVIDE EARTH ROTATION METHODS
+// PROVIDE SAT LAT AND LONG
+
 typedef struct YMD{
     int year;
     int mon;
@@ -41,6 +46,7 @@ class ofxSpacetrack{
         // Handle TLE
         void        setFileTLE(string value){this->fileTLE = value;};
         string      getFileTLE(){return this->fileTLE;};
+
         bool        processTLE();
 
 		// Time
@@ -83,6 +89,8 @@ class ofxSpacetrack{
     private:
         // Handle TLE
         string      fileTLE;            // TLE
+		string		firstLine;
+		string		secondLine;
 
         // Time
         double      currentJ2000;       // Julian date                    days from 4713 bc
@@ -102,6 +110,7 @@ class ofxSpacetrack{
         elsetrec    satrec;             // Satellite informations (From the library)
 
         //Position from Earth Central Body - TEME
+		double		v[3], r[3];
         ofPoint     currentPoint;       // get position - geocentric equatorial position
         ofVec3f     currentVelocity;    // get velocity - velocity vectors
 

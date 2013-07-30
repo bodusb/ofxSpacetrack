@@ -4,67 +4,64 @@
 void testApp::setup(){
 
 
-	ofBackground(ofColor::black);
+	//Start-up propagator
+	st = new ofxSpacetrack();
+	st->setFileTLE("SCD1_2LINE.DAT");
+	st->processTLE();
+    st->startPropagatorNow();
 
-	cam.setFarClip(100000);
+	//Start-up camera
+	ofBackground(ofColor::black);
+	cam.setFarClip(100000); 
 	cam.setDistance(20000);
 
-	////old OF default is 96 - but this results in fonts looking larger than in other programs.
+	// Visual interface
 	ofTrueTypeFont::setGlobalDpi(72);
-
 	verdana30.loadFont("verdana.ttf", 20, true, true);
 	verdana30.setLineHeight(34.0f);
 	verdana30.setLetterSpacing(1.035);
 
-	st = new ofxSpacetrack();
 
-	//st->setFileTLE("SCD1_2LINE.DAT");
-	st->setFileTLE("goes.txt");
-	st->processTLE();
+	glEnable(GL_DEPTH_TEST);
 
 
-    st->startPropagatorNow();
-	//cout<<"SETUP OK";
+    glShadeModel(GL_SMOOTH); //some model / light stuff
+	//light.enable();
+    ofEnableSeparateSpecularLight();
+
+	cout<<endl<<"SETUP OK";
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 
-    //Update the SpaceTrack propagator
+	//Update the SpaceTrack propagator
 	st->update();
-
-
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
-//MODEL
 
-    glEnable(GL_DEPTH_TEST);
 
 	cam.begin();
 
-
-//	ofTranslate(ofGetWidth()/2,ofGetHeight()/2);
-//	ofRotateX(90);
-//	ofScale(0.03,0.03,0.03);
-
-		//DRAW Satellite
+	//DRAW Satellite
 		ofPushMatrix();
 			ofSetColor(ofColor::red);
 			ofSphere(st->getCurrentPoint(),200);
 		ofPopMatrix();
 
-		//DRAW EARTH
+	//DRAW EARTH
 		//ofNoFill();
-		ofDrawAxis(8000);
-		ofSetColor(ofColor::blue);
-		ofSphere(6378);
+		ofPushMatrix();
+			ofDrawAxis(8000);
+			ofSetColor(ofColor::blue);
+			ofNoFill();
+			ofSphere(6378);		//Earth Radius
+		ofPopMatrix();
+						
 
     cam.end();
-
-
-//
 
 
 
@@ -112,7 +109,18 @@ void testApp::draw(){
                       ofToString(st->getCurrentYMD().sec),10,240);
 
 
+
 }
+
+//--------------------------------------------------------------
+void testApp::exit(){
+
+	// Free the propagator
+	cout<<endl<<"Free propagator:";
+	free(st);
+	cout<<endl<<"ok";
+}
+
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
@@ -169,6 +177,6 @@ void testApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){
+void testApp::dragEvent(ofDragInfo dragInfo){ 
 
 }

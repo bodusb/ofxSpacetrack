@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+
+#include "ofxUI.h"
 #include "ofxSpacetrack.h"
 
 
@@ -10,6 +12,7 @@ class testApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void exit();
 
 		void keyPressed  (int key);
 		void keyReleased(int key);
@@ -21,8 +24,12 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		ofxSpacetrack	*st;
-		ofTrueTypeFont	verdana30;
-		ofEasyCam		cam;
 
+		ofxSpacetrack			*st;
+
+		ofEasyCam				cam;
+
+		ofTrueTypeFont			verdana30;
+
+		
 };
