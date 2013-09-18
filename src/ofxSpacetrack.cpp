@@ -173,6 +173,9 @@ void ofxSpacetrack::update(){
     this->currentPoint.set(r[0],r[1],r[2]);
     this->currentVelocity.set(v[0],v[1],v[2]);
 
+	//update lat,long,alt
+	this->altitude = this->getCurrentPoint().length();
+	this->TEMEtoLLA(currentPoint,this->currentJ2000,this->latitude,this->longitude,this->altitude);
    
     // get updated orbital
     rv2coe(r,v,this->mu,
@@ -191,3 +194,67 @@ void ofxSpacetrack::update(){
 }
 
 
+double		ofxSpacetrack::ThetaG_JD( double v_jd){
+	// got from glSat http://glsat.sourceforge.net/
+
+  long double UT_L, TU_L, GMST_L, temp8;
+
+  // cout << "jd_L = " << jd_L << endl;
+  UT_L = modf(v_jd + 0.5, &temp8);
+  // cout << "UT_L = " << UT_L << endl;
+  // UT_L = temp8;
+  v_jd = v_jd - UT_L;
+  TU_L = (v_jd - 2451545.0)/36525;
+  GMST_L = 24110.54841 + TU_L * (8640184.812866 + TU_L * (0.093104 - TU_L * 6.2e-6));
+  GMST_L = GMST_L + secondsDay * omega_E * UT_L;
+
+  modf(GMST_L / secondsDay, &temp8);
+  temp8 = GMST_L - temp8 * secondsDay;
+  if (temp8 < 0.0)
+  {
+    temp8 += secondsDay;
+  }
+  return (2.0 * PI * temp8 / secondsDay);
+
+
+}
+
+void ofxSpacetrack::TEMEtoLLA(ofPoint r, double v_jd, double &lat, double &lon, double &alt){
+	// got from glSat http://glsat.sourceforge.net/
+
+	  long double	theta_mine = 0;
+  long double	r_mine = 0;
+  long double	e2 = 0;
+  long double	phi = 0;
+  long double	c = 0;
+
+  theta_mine = atan2(r.y, r.x);
+
+  lon = fmod(theta_mine - ThetaG_JD(v_jd), (2.0 * PI));
+  
+  r_mine = sqrt((r.x * r.x) + (r.y * r.y));
+  e2 = f * (2.0 - f);
+  lat = atan2(r.z, r_mine);
+  while (fabs(lat - phi) > 1.0e-10)
+  {
+    phi = lat;
+    c = 1.0 / sqrt(1 - e2 * pow(sin(phi), 2));
+    lat = atan2(r.z + e_R * c * e2 * sin(phi), r_mine);
+  }
+  
+  alt = r_mine / cos(lat) - e_R * c;
+
+  if (lon > PI)
+  {
+    lon -= (2.0 * PI);
+  }
+  else if (lon < -PI)
+  {
+    lon += (2.0 * PI);
+  }
+
+  lat *= rad2deg;
+  lon *= rad2deg;
+
+
+}

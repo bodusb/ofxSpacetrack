@@ -6,6 +6,12 @@
 #include "ofxSpacetrack.h"
 
 
+typedef struct {
+	string name; 
+	float latitude;
+	float longitude;
+} City;
+
 class testApp : public ofBaseApp{
 
 	public:
@@ -24,6 +30,7 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+		vector<City> cities;
 
 		ofxSpacetrack			*st;
 

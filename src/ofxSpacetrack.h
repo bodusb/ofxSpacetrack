@@ -11,7 +11,15 @@
 // TO DO
 
 // PROVIDE EARTH ROTATION METHODS
-// PROVIDE SAT LAT AND LONG
+
+#define deg2rad			(PI / 180.0)
+#define rad2deg			(180.0 / PI)
+#define omega_E			1.00273791	// Earth rotations per sidereal day
+#define secondsDay		86400.0	// 24 * 60 * 60
+#define minutesDay		1440.0	// 24 * 60
+#define e_R				6378.135	// Radius of the Earth (km)
+#define f				(1.0 / 298.26)	// Ellipticity of the Earth
+
 
 typedef struct YMD{
     int year;
@@ -82,9 +90,40 @@ class ofxSpacetrack{
 		ofPoint     getCurrentPoint(){return this->currentPoint;};
 		ofVec3f     getCurrentVelocity(){return this->currentVelocity;};
 
-		// Info
-		satInfo     getSatInfo(){return this->info;};
+		double		getLatitude() { return this->latitude;};
+		double		getLongitude() { return this->longitude;};
+		double		getAltitude() {return this->altitude;};
 
+		// Info - http://en.wikipedia.org/wiki/Orbital_elements
+		
+
+		//shape of the ellipse, describing how much it is elongated compared to a circle.
+		void		setEccentricity(double v_ecc) { this->satrec.ecco = v_ecc; satrec.alta = satrec.a*(1.0 + satrec.ecco) - 1.0;  satrec.altp = satrec.a*(1.0 - satrec.ecco) - 1.0;}; 
+		double		getEccentricity() { return this->satrec.ecco;}
+
+		// the sum of the periapsis and apoapsis distances divided by two. For circular orbits, the semimajor axis is the distance between the centers of the bodies, not the distance of the bodies from the center of mass.
+		void		setSemimajorAxis(double v_a) { this->satrec.a = v_a; satrec.alta = satrec.a*(1.0 + satrec.ecco) - 1.0;  satrec.altp = satrec.a*(1.0 - satrec.ecco) - 1.0;}; 
+		double		getSemimajorAxis() { return this->satrec.a;};
+
+		// rad - vertical tilt of the ellipse with respect to the reference plane, measured at the ascending node (where the orbit passes upward through the reference plane)
+		void		setInclination(double v_incl_in_rad) { this->satrec.inclo = v_incl_in_rad;}; 
+		double		getInclination() { return this->satrec.inclo;};
+
+		// rad - horizontally orients the ascending node of the ellipse (where the orbit passes upward through the reference plane) with respect to the reference frame's vernal point
+		void		setLongAscendingNode(double v_ascNode_in_rad) { this->satrec.nodeo = v_ascNode_in_rad; };
+		double		getLongAscendingNode() { return this->satrec.nodeo;};
+
+		// rad - defines the orientation of the ellipse in the orbital plane, as an angle measured from the ascending node to the periapsis (the closest point the second body comes to the first during an orbit).
+		void		setPeriapsisArgument(double v_argp_in_rad) { this->satrec.argpo = v_argp_in_rad;};
+		double		getPeriapsisArgument() { return this->satrec.argpo;};
+
+		// rad - defines the position of the orbiting body along the ellipse at a specific time
+		void		setMeanAnomaly(double v_mean_in_rad) { this->satrec.mo = v_mean_in_rad;};
+		double		getMeanAnomaly() { return this->satrec.mo;};
+
+		// sat number
+		long int	getSatNumber() { return this->satrec.satnum;};
+    
 
     private:
         // Handle TLE
@@ -114,6 +153,15 @@ class ofxSpacetrack{
         ofPoint     currentPoint;       // get position - geocentric equatorial position
         ofVec3f     currentVelocity;    // get velocity - velocity vectors
 
+		double		latitude;
+		double		longitude;
+		double		altitude;
+
+		double		rotz;
+
+		double		ThetaG_JD( double v_jd);
+		void TEMEtoLLA(ofPoint r, double v_jd, double &lat, double &lon, double &alt);
+
         satInfo     info;     // orbit elements e info
 
 		//Gravitational Constants
@@ -125,6 +173,8 @@ class ofxSpacetrack{
 		double j3;
 		double j4;
 		double j3oj2; // j3/j2
+
+
 };
 
 

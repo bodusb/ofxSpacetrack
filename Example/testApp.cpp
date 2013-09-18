@@ -29,6 +29,25 @@ void testApp::setup(){
 	//light.enable();
     ofEnableSeparateSpecularLight();
 
+	//
+	City newyork = { "new york", 40+47/60., -73 + 58/60. };
+	City tokyo = { "tokyo", 35 + 40./60, 139 + 45/60. };
+	City london = { "london", 51 + 32/60., -5./60. };
+	City shanghai = { "shanghai", 31 + 10/60., 121 + 28/60. };
+	City buenosaires = { "buenos aires", -34 + 35/60., -58 + 22/60. };
+	City melbourne = { "melbourne" , -37 + 47/60., 144 + 58/60. };	
+	City detroit = { "detroit", 42 + 19/60., -83 + 2 / 60. };
+	City sjc = { "sjc", -23 + 11/60, -45 + 42/60};
+
+	cities.push_back( newyork );
+	cities.push_back( tokyo );
+	cities.push_back( london );
+	cities.push_back( shanghai );
+	cities.push_back( buenosaires );
+	cities.push_back( melbourne );
+	cities.push_back( detroit );
+	cities.push_back( sjc );
+
 	cout<<endl<<"SETUP OK";
 }
 
@@ -45,11 +64,51 @@ void testApp::draw(){
 
 	cam.begin();
 
+	ofScale(1,-1,1);
+
+	
 	//DRAW Satellite
+	//Draw by lat/long
 		ofPushMatrix();
-			ofSetColor(ofColor::red);
-			ofSphere(st->getCurrentPoint(),200);
+			ofSetColor(ofColor::yellow);
+			ofQuaternion latRot, longRot, spinQuat;
+			latRot.makeRotate(st->getLatitude(), 1, 0, 0);
+			longRot.makeRotate(st->getLongitude(), 0, 1, 0);
+			//spinQuat.makeRotate(ofGetFrameNum(), 0, 1, 0);
+			ofVec3f center = ofVec3f(0,0,st->getAltitude() + 6378.135);
+			ofVec3f worldPoint = latRot * longRot * spinQuat * center;
+			ofSphere(worldPoint,200);
 		ofPopMatrix();
+
+
+	ofPushMatrix();
+	ofSetColor(255);	
+	for(unsigned int i = 0; i < cities.size(); i++){
+		
+		//three rotations
+		//two to represent the latitude and lontitude of the city
+		//a third so that it spins along with the spinning sphere 
+		ofQuaternion latRot, longRot, spinQuat;
+		latRot.makeRotate(cities[i].latitude, 1, 0, 0);
+		longRot.makeRotate(cities[i].longitude, 0, 1, 0);
+		//spinQuat.makeRotate(ofGetFrameNum(), 0, 1, 0);
+		
+		//our starting point is 0,0, on the surface of our sphere, this is where the meridian and equator meet
+		ofVec3f center = ofVec3f(0,0,6378.135);
+		//multiplying a quat with another quat combines their rotations into one quat
+		//multiplying a quat to a vector applies the quat's rotation to that vector
+		//so to to generate our point on the sphere, multiply all of our quaternions together then multiple the centery by the combined rotation
+		ofVec3f worldPoint = latRot * longRot * spinQuat * center;
+		
+		//draw it and label it
+		ofLine(ofVec3f(0,0,0), worldPoint);
+
+		//set the bitmap text mode billboard so the points show up correctly in 3d
+		ofDrawBitmapString(cities[i].name, worldPoint );
+	}
+	ofPopMatrix();
+
+
 
 	//DRAW EARTH
 		//ofNoFill();
@@ -70,24 +129,12 @@ void testApp::draw(){
 	ofSetColor(225);
 	//Testing interface
 	verdana30.drawString("SATELLITE INFORMATION",10,20);									//SATELLITE INFORMATION
-
-	//verdana30.drawString(	"POSX:" + ofToString(st.getCurrentPosition().x) +
-	//						" - POSY:" + ofToString(st.getCurrentPosition().y) +
-	//						" - POSZ:" + ofToString(st.getCurrentPosition().z),10,60);		//POS X
-	//verdana30.drawString(	"VELX:" + ofToString(st.getCurrentVelocity().x) +
-	//						" - VELY:" + ofToString(st.getCurrentVelocity().y) +
-	//						" - VELZ:" + ofToString(st.getCurrentVelocity().z),10,80);		//VEL X
-
 	verdana30.drawString(	"POSX: " + ofToString(st->getCurrentPoint()) ,10,60);		//POS X
 	verdana30.drawString(	"VELX: " + ofToString(st->getCurrentVelocity()) ,10,80);		//VEL X
 
-	double alt = st->getCurrentPoint().length() - 6378;
-	double vel = st->getCurrentVelocity().length();
-
-	verdana30.drawString(	"LAT: " + ofToString(1) +
-							" - LONG: " + ofToString(2) +
-							" - ALT: " + ofToString(alt) +
-							" - SuperV: " + ofToString(vel)	,10,100);								//ECI
+	verdana30.drawString(	"LAT: " + ofToString(st->getLatitude()) +
+		" - LONG: " + ofToString(st->getLongitude()) +
+		" - ALT: " + ofToString(st->getAltitude()),10,100);								//ECI
 
 	verdana30.drawString("DATE: " ,10,120);					//DATE
 	verdana30.drawString("JULIAN: " + ofToString(st->getCurrentJ2000()),10,140);				//JULIAN
