@@ -22,3 +22,12 @@ Trabalho realizado por:
 Bruno da Silva – yirhoo@gmail.com
 Giulia Fragoso Grigoli - giugrigoli@gmail.com 
 Orientado por: Christopher Shneider Cerqueira – christophercerqueira@gmail.com
+
+
+
+==============
+log of changes
+
+2013-09-18
+- Added current latitude, longitude and altitude calculations based in glSat http://glsat.sourceforge.net/ codes
+- Added getters and setters to the orbital elements (eccentricity,semimajor axis,inclination,argumentOfPeriapsis,longitudeOfAscendingNode,meanAnomaly)
