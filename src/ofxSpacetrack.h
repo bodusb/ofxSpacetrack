@@ -2,9 +2,13 @@
 
 #include "ofMain.h"
 
+// SATELLITE LIBRARIES
 #include "aiaa/SGP4ext.h"
 #include "aiaa/SGP4UNIT.h"
 #include "aiaa/SGP4io.h"
+
+// ASTRO LIBRARY
+#include "aaplus/AA+.h"
 
 // http://celestrak.com/publications/AIAA/2006-6753/
 
@@ -19,6 +23,31 @@
 #define minutesDay		1440.0	// 24 * 60
 #define e_R				6378.135	// Radius of the Earth (km)
 #define f				(1.0 / 298.26)	// Ellipticity of the Earth
+#define dAstronomicalUnit    149597870.7	// In km
+
+typedef struct astro{
+	string name;
+	double latitude;		// degrees
+	double longitude;		// degrees
+	double altitude;		// km
+	double radius;			// km
+	ofPoint geoPosition;	// km
+	ofVec3f rotation;		// degrees
+	double sizeAdaptation;		//coeficient to adjust a novel size
+	double distanceAdaptation;	//coeficient to adjust a novel ecliptic distance
+
+	bool available;
+}astro;
+
+typedef struct groundStation{
+	int			id;
+	string		name;
+	double		latitude;
+	double		longitude;
+	double		altitude;
+	ofPoint		geoPosition;
+	bool		enabled;
+}groundStation;
 
 
 typedef struct YMD{
@@ -63,6 +92,8 @@ class ofxSpacetrack{
         double		getCurrentMFE()		{return this->currentMFE;};
         double      convertYMDtoJ2000( YMD *value );
         YMD         convertJ2000toYMD( double value );
+		void		setTimezone(int value){this->timezone = value;};
+		int			getTimezone() {return this->timezone;};
 
         void        setTimeMultiplier(double value) {this->timeMultiplier = value;};
         double      getTimeMultiplier() { return this->timeMultiplier;};
@@ -93,6 +124,31 @@ class ofxSpacetrack{
 		double		getLatitude() { return this->latitude;};
 		double		getLongitude() { return this->longitude;};
 		double		getAltitude() {return this->altitude;};
+
+		bool		isOnEclipse() {return this->onEclipse;};
+
+		// Astros positions
+
+		ofPoint		getSunPosition() { return this->sun.geoPosition;};
+		double		getSunRadius() {return this->sun.radius;};
+		void		setSunCalc(bool value) {this->sunCalc = value;};
+		bool		getSunCalc() { return this->sunCalc;};
+		bool		isSunPositionAvailable() {return this->sun.available;};
+
+		ofPoint		getMoonPosition() { return this->moon.geoPosition;};
+		double		getMoonRadius() { return this->moon.radius;};
+		void		setMoonCalc(bool value) {this->moonCalc = value;};
+		bool		getMoonCalc() { return this->moonCalc;};
+		bool		isMoonPositionAvailable() { return this->moon.available;};
+
+		// Ground station
+		vector<groundStation*>	gsList;
+		void					addGroundStation(int id, string v_name, double v_lat, double v_long, double v_alt = 0);
+		groundStation*			getGroundStation(string v_name);
+		groundStation*			getGroundStation(int v_id);
+		void					setGroundStationStatus(string v_name,bool v_state);
+		void					setGroundStationStatus(int v_id,bool v_state);
+
 
 		// Info - http://en.wikipedia.org/wiki/Orbital_elements
 		
@@ -135,6 +191,7 @@ class ofxSpacetrack{
         double      currentJ2000;       // Julian date                    days from 4713 bc
         YMD         currentYMD;         // year, month, day, and time
         double      currentMFE;          // Minutes from epoch
+		int			timezone;
 
         //Propagator control
 
@@ -156,6 +213,7 @@ class ofxSpacetrack{
 		double		latitude;
 		double		longitude;
 		double		altitude;
+		bool		onEclipse;
 
 		double		rotz;
 
@@ -174,6 +232,25 @@ class ofxSpacetrack{
 		double j4;
 		double j3oj2; // j3/j2
 
+
+		//earth
+		//astro earth;
+		//bool calcEarth;
+
+		//moon
+		astro moon;
+		bool moonCalc;
+
+		//sun
+		astro sun;
+		bool sunCalc;
+
+		//star list
+		//vector<astro> starList;
+		//bool calcStars;
+
+		// Ground stations
+		
 
 };
 
